@@ -33,7 +33,7 @@ function App() {
 
 ```jsx
 // Class component
-class App() {
+class App extends React.Component {
 	render() {
 		return (
 			<div>Hello World!!!<div>
@@ -83,3 +83,110 @@ const jsx = React.createElement(
 <label htmlFor="username">Username</label>
 <input type="text" id="username" />
 ```
+
+## 4. Data binding
+
+- Dấu ngoặc nhọn {} cho phép bạn viết các biểu thức JavaScript bên trong JSX
+
+```jsx
+const user = { name: "Alice", imgUrl: "..." };
+return (
+  <div>
+    <h1>{user.name}</h1>
+    <img className="avatar" src={user.imageUrl} />
+  </div>
+);
+```
+
+## 5. Conditional rendering
+
+- Bạn có thể sử dụng if else để hiển thị nội dung khác nhau dựa trên điều kiện
+
+```jsx
+const isLoggedIn = true;
+let content;
+if (isLoggedIn) {
+  content = <button>Logout</button>;
+} else {
+  content = <button>Login</button>;
+}
+return <div>{content}</div>;
+```
+
+- Bạn có thể sử dụng toán tử 3 ngôi để hiển thị nội dung bên trong JSX
+
+```jsx
+const isLoggedIn = true;
+return (
+  <div>{isLoggedIn ? <button>Logout</button> : <button>Login</button>}</div>
+);
+```
+
+- Nếu chỉ muốn hiển thị nội dung khi điều kiện đúng, bạn có thể sử dụng toán tử &&
+
+```jsx
+const isLoggedIn = true;
+return <div>{isLoggedIn && <button>Logout</button>}</div>;
+```
+
+## 6. List rendering
+
+- Với JSX, bạn có thể sử dụng toán tử map để render một mảng dữ liệu thành một mảng các phần tử
+
+```jsx
+const users = [
+  { id: 1, name: "Alice", imgUrl: "..." },
+  { id: 2, name: "Bob", imgUrl: "..." },
+  { id: 3, name: "Charlie", imgUrl: "..." },
+];
+return (
+  <div>
+    {users.map((user) => (
+      <div key={user.id}>
+        <h1>{user.name}</h1>
+        <img className="avatar" src={user.imageUrl} />
+      </div>
+    ))}
+  </div>
+);
+```
+
+## 7. Event
+
+- Các sự kiện trong React được đặt tên bằng camelCase, thay vì chữ thường. Ví dụ: onclick -> onClick, onchange -> onChange
+- Với JSX, truyền một hàm làm trình xử lý sự kiện, thay vì một chuỗi.
+- Không gọi hàm xử lý sự kiện, ta chỉ đưa hàm vào trong onClick và React sẽ tự gọi đến hàm đó khi user click vào button
+
+```jsx
+// html
+<button onclick="handleClick()">
+  Clicker
+</button>
+
+// jsx
+<button onClick={handleClick}>
+  Clicker
+</button>
+```
+
+- Tất cả sự kiện đều nhận được một đối số là event, nó là một đối tượng có các thuộc tính và phương thức giúp xử lý sự kiện. Quan trọng nhất là event.target là một tham chiếu đến phần tử DOM mà sự kiện được gọi.
+
+```jsx
+const handleChange = (event) => {
+  console.log(event.target.value);
+};
+
+return <input onChange={handleChange} />;
+```
+
+- Để truyền tham số vào cho các hàm xử lý sự kiện, ta có thể sử dụng arrow function
+
+```jsx
+const showMessage = (message) => {
+  alert(message);
+};
+
+return <button onClick={() => showMessage("Hello BC42")}>Show Message</button>;
+```
+
+- Tổng hợp những sự kiện được hỗ trợ trong react: https://reactjs.org/docs/events.html
