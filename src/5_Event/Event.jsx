@@ -28,6 +28,7 @@ function Event() {
       {/* Lưu ý: onClick={handleClick} không bao gồm cặp ngoặc tròn ở cuối */}
       {/* Không gọi hàm xử lý sự kiện, ta chỉ đưa nó vào trong onClick và React sẽ tự gọi đến hàm đó khi user click vào button */}
       <button onClick={handleClick}>Click</button>
+      {/* <button onClick={() => alert("Clicked")}>Click</button> */}
 
       <hr />
 

@@ -190,3 +190,81 @@ return <button onClick={() => showMessage("Hello BC42")}>Show Message</button>;
 ```
 
 - Tổng hợp những sự kiện được hỗ trợ trong react: https://reactjs.org/docs/events.html
+
+## 8. Style
+
+- Inline style: Với React, inline style không được thể hiện bằng một string mà bằng một object. Các thuộc tính CSS được đặt tên bằng camelCase
+
+```jsx
+<h1 style={{ backgroundColor: "red", color: "white" }}>Hello</h1>
+```
+
+- CSS: Import trực tiếp file css vào Component, tuy nhiên dù bạn chỉ import ở 1 component nhưng css được import sẽ được áp dụng lên toàn bộ ứng dụng.
+
+```jsx
+import "./styles.css";
+```
+
+- CSS module:
+  - CSS Module là một phương pháp để tạo ra các class với phạm vi cục bộ, giúp tránh xung đột và tăng tính tổ chức của mã CSS.
+  - Với CSS Module, các class được tạo ra chỉ có tác dụng trong phạm vi của component mà chúng được sử dụng.
+  - Khi sử dụng CSS Module, các class được đặt tên tự động và duy nhất, để tránh xung đột với các lớp CSS khác trong ứng dụng của bạn.
+
+```jsx
+import styles from "./styles.module.css";
+
+<h1 className={styles.title}>Hello</h1>;
+```
+
+## 9. State
+
+- Một số nội dung trên màn hình sẽ cập nhật theo tương tác của người dùng. Ví dụ như khi người dùng click vào button "Show" sẽ hiển thị nội dung ẩn, khi click vào button "Buy" sẽ đưa sản phẩm vào giỏ hàng,...Component cần lưu trữ trạng thái của nó để biết được nội dung hiển thị là gì, sản phẩm nào đã được thêm vào giỏ hàng. Trong React dữ liệu để lưu trữ trạng thái của component được gọi là State.
+
+# Khai báo một biến bình thường trong component là không đủ
+
+- Component trên dưới thị một giá trị count, nhấn vào nút Increment sẽ hiển thị giá trị mới của count bằng cách tăng lên một đơn vị. Tuy nhiên có 2 điều ngăn không cho điều này hoạt động:
+  - Các biến cục bộ không được chia sẻ giữa các lần render, nghĩa là mỗi lần render, biến count sẽ được khởi tạo lại về giá trị 0.
+  - Các thay đổi đối với biến cục bộ sẽ không kích hoạt render, nghĩa là khi nhấn vào nút Increment, giá trị của count sẽ được tăng lên một đơn vị nhưng không có gì thay đổi trên giao diện.
+
+```jsx
+function Counter() {
+  let count = 0;
+  const handleIncrement = () => {
+    count++;
+    console.log(count);
+  };
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={handleIncrement}>Increment</button>
+    </div>
+  );
+}
+```
+
+- Để cập nhật một component với dữ liệu mới, hai điều cần phải xảy ra:
+
+  - Dữ liệu được giữ lại giữa các lần render.
+  - Kích hoạt để component được render lại với dữ liệu mới (re-rendering)
+
+- `useState` là một React Hook cung cấp cho chúng ta hai điều trên:
+
+  - Một biến trạng thái (state) để giữ lại dữ liệu giữa các lần render.
+  - Một hàm setter để cập nhật giá trị của state và kích hoạt render lại component.
+
+- useState nhận vào một tham số là giá trị khởi tạo của state, và trả về một mảng gồm 2 phần tử: giá trị của state và hàm setter để cập nhật giá trị của state. Cú pháp [count, setCount] được gọi là array destructuring, cho phép đọc giá trị của mảng theo thứ tự.
+
+```jsx
+function Counter() {
+  const [count, setCount] = useState(0);
+  const handleIncrement = () => {
+    setCount(count + 1);
+  };
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={handleIncrement}>Increment</button>
+    </div>
+  );
+}
+```
