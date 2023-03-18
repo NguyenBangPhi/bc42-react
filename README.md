@@ -220,7 +220,7 @@ import styles from "./styles.module.css";
 
 - Một số nội dung trên màn hình sẽ cập nhật theo tương tác của người dùng. Ví dụ như khi người dùng click vào button "Show" sẽ hiển thị nội dung ẩn, khi click vào button "Buy" sẽ đưa sản phẩm vào giỏ hàng,...Component cần lưu trữ trạng thái của nó để biết được nội dung hiển thị là gì, sản phẩm nào đã được thêm vào giỏ hàng. Trong React dữ liệu để lưu trữ trạng thái của component được gọi là State.
 
-# Khai báo một biến bình thường trong component là không đủ
+##### Khai báo một biến bình thường trong component là không đủ
 
 - Component trên dưới thị một giá trị count, nhấn vào nút Increment sẽ hiển thị giá trị mới của count bằng cách tăng lên một đơn vị. Tuy nhiên có 2 điều ngăn không cho điều này hoạt động:
   - Các biến cục bộ không được chia sẻ giữa các lần render, nghĩa là mỗi lần render, biến count sẽ được khởi tạo lại về giá trị 0.
@@ -242,17 +242,18 @@ function Counter() {
 }
 ```
 
-- Để cập nhật một component với dữ liệu mới, hai điều cần phải xảy ra:
+##### Để cập nhật một component với dữ liệu mới, hai điều cần phải xảy ra:
 
   - Dữ liệu được giữ lại giữa các lần render.
   - Kích hoạt để component được render lại với dữ liệu mới (re-rendering)
 
+##### Hook `useState`
 - `useState` là một React Hook cung cấp cho chúng ta hai điều trên:
 
   - Một biến trạng thái (state) để giữ lại dữ liệu giữa các lần render.
   - Một hàm setter để cập nhật giá trị của state và kích hoạt render lại component.
 
-- useState nhận vào một tham số là giá trị khởi tạo của state, và trả về một mảng gồm 2 phần tử: giá trị của state và hàm setter để cập nhật giá trị của state. Cú pháp [count, setCount] được gọi là array destructuring, cho phép đọc giá trị của mảng theo thứ tự.
+- Cú pháp: `const [count, setCount] = useState(0)`. useState nhận vào một tham số là giá trị khởi tạo của state, và trả về một mảng gồm 2 phần tử: giá trị của state và hàm setter để cập nhật giá trị của state. Cú pháp [count, setCount] được gọi là array destructuring, cho phép đọc giá trị của mảng theo thứ tự.
 
 ```jsx
 function Counter() {
@@ -268,3 +269,85 @@ function Counter() {
   );
 }
 ```
+
+## 10. Props
+
+- Các component trong React sử dụng props để giao tiếp với nhau.
+- Props là một đối tượng (object) chứa các thuộc tính (properties) được truyền từ một component cha (parent component) đến một component con (child component). Các props này có thể là bất kỳ giá trị nào, từ kiểu dữ liệu đơn giản như chuỗi (string) hoặc số (number), cho đến các đối tượng phức tạp hơn.
+
+```jsx
+// Truyền props cho component con
+function App() {
+  return <Welcome name="John" age={30} />;
+}
+
+// Nhận props trong component con
+function Welcome(props) {
+  return (
+    <div>
+      My name is {props.name} and I am {props.age} years old.
+    </div>
+  );
+}
+```
+
+- Ngoài ra bởi vì props là một object, nên ta có thể sử dụng object destructuring để lấy các thuộc tính cần thiết
+
+```jsx
+function Welcome({ name, age }) {
+  return (
+    <div>
+      My name is {name} and I am {age} years old.
+    </div>
+  );
+}
+```
+
+- Trong React, bạn có thể truyền một hàm (function) làm prop cho một component. Khi một component nhận được một hàm làm prop, nó có thể gọi hàm đó và truyền các tham số vào để thực hiện các hành động cụ thể.
+
+  - Giúp gọi tới hàm xử lý của component cha khi một sự kiện xảy ra trong component con.
+  - Giúp truyền dữ liệu từ component con lên component cha.
+
+```jsx
+// Truyền hàm xử lý sự kiện cho component con
+function App() {
+  const handleShowMessage = (message) => {
+    alert(message);
+  };
+  return <Welcome onShowMessage={handleShowMessage} />;
+}
+
+// Nhận hàm xử lý sự kiện trong component con
+function Welcome({ onShowMessage }) {
+  const handleClick = () => {
+    onShowMessage("Hello");
+  };
+  return <button onClick={handleClick}>Show message</button>;
+}
+```
+
+- Trong React, prop children là một prop đặc biệt cho phép truyền các thành phần (components) hoặc các phần tử (elements) làm con của một component.
+
+```jsx
+function ParentComponent() {
+  return (
+    <ChildComponent>
+      <h1>Hello</h1>
+      <p>This is a child component.</p>
+    </ChildComponent>
+  );
+}
+
+function ChildComponent(props) {
+  return (
+    <div>
+      <h2>Child Component</h2>
+      {props.children}
+    </div>
+  );
+}
+```
+
+- Một số lưu ý:
+  - Props là chỉ đọc (read-only), không thể thay đổi giá trị của props trong component con.
+  - Nếu một component nhận được một prop không được truyền vào, giá trị của prop đó sẽ là undefined. Để tránh việc này, ta có thể khai báo giá trị mặc định cho prop bằng cách sử dụng cú pháp sau: `function Welcome({ name = "John" })`

@@ -9,11 +9,14 @@ import Event from "./5_Event/Event";
 import Style from "./6_Style/Style";
 import State from "./7_State/State";
 import SelectCar from "./BT_SelectCar/SelectCar";
+import Props from "./8_Props/Props";
+import ShoeShop from "./BT_ShoeShop/ShoeShop";
+import ShopingCart from "./BT_ShopingCart/ShopingCart";
 
 function App() {
   return (
     <div>
-      <State />
+      <ShopingCart />
     </div>
   );
 }
