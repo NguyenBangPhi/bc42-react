@@ -1,9 +1,13 @@
 import React from "react";
 import ProductItem from "./ProductItem";
 
-function ProductList({ products, onSelectProduct }) {
+function ProductList({ products, onSelectProduct, onAddToCart }) {
   const handleGetProduct = (product) => {
     onSelectProduct(product);
+  };
+
+  const handleAddToCart = (product) => {
+    onAddToCart(product);
   };
 
   return (
@@ -14,6 +18,7 @@ function ProductList({ products, onSelectProduct }) {
             <ProductItem
               product={product}
               onSelectProduct={handleGetProduct}
+              onAddToCart={handleAddToCart}
             />
           </div>
         );
