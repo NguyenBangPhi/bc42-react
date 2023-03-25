@@ -244,10 +244,11 @@ function Counter() {
 
 ##### Để cập nhật một component với dữ liệu mới, hai điều cần phải xảy ra:
 
-  - Dữ liệu được giữ lại giữa các lần render.
-  - Kích hoạt để component được render lại với dữ liệu mới (re-rendering)
+- Dữ liệu được giữ lại giữa các lần render.
+- Kích hoạt để component được render lại với dữ liệu mới (re-rendering)
 
 ##### Hook `useState`
+
 - `useState` là một React Hook cung cấp cho chúng ta hai điều trên:
 
   - Một biến trạng thái (state) để giữ lại dữ liệu giữa các lần render.
@@ -269,6 +270,10 @@ function Counter() {
   );
 }
 ```
+
+- Một số quy tắc khi sử dụng hooks:
+  - Chỉ gọi hooks từ React function component. Không được gọi hooks từ các hàm bình thường.
+  - Chỉ gọi hooks ở cấp độ cao nhất của component. Không được gọi hooks trong các vòng lặp, các hàm con hay các hàm xử lý sự kiện.
 
 ## 10. Props
 
@@ -351,3 +356,20 @@ function ChildComponent(props) {
 - Một số lưu ý:
   - Props là chỉ đọc (read-only), không thể thay đổi giá trị của props trong component con.
   - Nếu một component nhận được một prop không được truyền vào, giá trị của prop đó sẽ là undefined. Để tránh việc này, ta có thể khai báo giá trị mặc định cho prop bằng cách sử dụng cú pháp sau: `function Welcome({ name = "John" })`
+
+### State vs Props
+
+| State                                                              | Props                                                                      |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| State được sử dụng để lưu trữ và quản lý trạng thái của component. | Props được sử dụng để truyền dữ liệu giữa các component                    |
+| State được tạo và quản lý bởi component thông qua hook `useState`  | Props được truyền vào component thông qua thuộc tính                       |
+| State chỉ có thể được thay đổi bởi component tạo ra nó             | Props là chỉ đọc, không thể thay đổi giá trị của props trong component con |
+| State thay đổi sẽ gây ra việc render lại component                 | Props thay đổi sẽ gây ra việc render lại component                         |
+
+### Re-rendering
+
+- Một component sẽ kích hoạt việc hiển thị lại (re-render) khi:
+
+  - Khi state của component thay đổi bằng cách gọi hàm setter được trả về từ hook useState.
+  - Khi props của component thay đổi do component cha truyền vào giá trị mới.
+  - Khi component cha re-render, tất cả các component con cũng sẽ re-render, bất kể props của chúng có thay đổi hay không.

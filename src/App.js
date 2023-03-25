@@ -12,11 +12,12 @@ import SelectCar from "./BT_SelectCar/SelectCar";
 import Props from "./8_Props/Props";
 import ShoeShop from "./BT_ShoeShop/ShoeShop";
 import ShopingCart from "./BT_ShopingCart/ShopingCart";
+import UserManagement from "./BT_UserManagement/UserManagement";
 
 function App() {
   return (
     <div>
-      <ShopingCart />
+      <UserManagement />
     </div>
   );
 }
