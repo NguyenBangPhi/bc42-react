@@ -373,3 +373,121 @@ function ChildComponent(props) {
   - Khi state của component thay đổi bằng cách gọi hàm setter được trả về từ hook useState.
   - Khi props của component thay đổi do component cha truyền vào giá trị mới.
   - Khi component cha re-render, tất cả các component con cũng sẽ re-render, bất kể props của chúng có thay đổi hay không.
+
+## 11. Effect Hook
+
+- Hook useEffect trong React là một cơ chế để thực hiện các side effect (tác động phụ) trong các component. Các side effect có thể bao gồm việc tương tác với các API bên ngoài, thay đổi DOM,...
+- Cú pháp: `useEffect(setup, dependencies?)`
+
+  - setup: một hàm mà bạn muốn thực thi mỗi khi hook useEffect chạy.
+  - dependencies?: một mảng phụ thuộc để chỉ định khi nào hook useEffect chạy lại.
+
+- Vòng đời của một component trong React:
+
+  - MOUNTING: component được thêm vào DOM.
+  - UPDATING: component được nhận được props mới hoặc state thay đổi.
+  - UNMOUNTING: component bị hủy khỏi DOM.
+
+- Đặt logic xử lý của bạn (side-effect) vào hàm setup, sau đó sử dụng đối số phụ thuộc (dependencies) cho phép bạn nắm bắt các sự kiện vòng đời để kiểm soát thời điểm bạn muốn logic xử lý được chạy. Đó là mục đích duy nhất của useEffect().
+
+!["use effect"](https://dmitripavlutin.com/85fa02ee6610f1e08b247ef2f967139c/react-useeffect-hook.svg)
+
+- `useEffect(setup, [])` với phụ thuộc là một mảng rỗng, thì useEffect sẽ chỉ thực thi hàm `setup` một lần duy nhất sau khi component render lần đầu. Thường được sử dụng để thực hiện các tác vụ khởi tạo như lấy dữ liệu từ API, thiết lập các sự kiện,...
+
+```jsx
+function MyComponent() {
+  // Khai báo biến trạng thái cho dữ liệu được lấy từ API
+  const [data, setData] = useState([]);
+
+  // Định nghĩa hàm fetchData để gọi API
+  async function fetchData() {
+    // Gọi API
+    const response = await axios.get(`https://example.com/api`);
+    // Cập nhật biến trạng thái data với dữ liệu mới
+    setData(response.data);
+  }
+
+  // Sử dụng hook useEffect để gọi hàm fetchData khi component được khởi tạo
+  useEffect(() => {
+    // Gọi hàm fetchData
+    fetchData();
+  }, []); // Truyền một mảng rỗng vào tham số thứ hai để chỉ chạy hook useEffect một lần khi component được khởi tạo
+
+  // Hiển thị giao diện cho component
+  return (
+    <div>
+      <ul>
+        {data.map((item) => (
+          <li key={item.id}>{item.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+- `useEffect(setup, [prop, state])` với phụ thuộc là một mảng chứa nhiều giá trị, thì useEffect sẽ thực thi hàm `setup` sau khi component render lần đầu và sau các lần render tiếp theo nếu một trong các giá trị trong mảng thay đổi. Thường được sử dụng để đọc giá trị mới nhất của state hoặc prop và thực hiện các tác vụ phụ thuộc vào giá trị đó.
+
+  - Ví dụ: khi giá trị của state searchTerm thay đổi, ta cần lấy dữ liệu mới từ API.
+
+  ```jsx
+  function MyComponent() {
+    // Khai báo biến trạng thái cho giá trị searchTerm
+    const [searchTerm, setSearchTerm] = useState("");
+
+    // Khai báo biến trạng thái cho dữ liệu được lấy từ API
+    const [data, setData] = useState([]);
+
+    // Định nghĩa hàm fetchData để gọi API với giá trị searchTerm
+    async function fetchData() {
+      // Gọi API với giá trị searchTerm
+      const response = await axios.get(
+        `https://example.com/api?search=${searchTerm}`
+      );
+      // Cập nhật biến trạng thái data với dữ liệu mới
+      setData(response.data);
+    }
+
+    // Sử dụng hook useEffect để gọi hàm fetchData khi giá trị searchTerm thay đổi
+    useEffect(() => {
+      // Gọi hàm fetchData
+      fetchData();
+    }, [searchTerm]); // Truyền searchTerm vào mảng phụ thuộc để chỉ chạy hook useEffect khi searchTerm thay đổi
+
+    // Hiển thị giao diện cho component
+    return (
+      <div>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <ul>
+          {data.map((item) => (
+            <li key={item.id}>{item.name}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+  ```
+
+  - Ví dụ: khi giá trị của prop thay đổi, ta cần set lại giá trị của state.
+
+  ```jsx
+  function MyComponent({ name }) {
+    // Khai báo biến trạng thái cho giá trị chào
+    const [greeting, setGreeting] = useState("");
+
+    // Sử dụng hook useEffect để thiết lập lại giá trị chào khi prop name thay đổi
+    useEffect(() => {
+      // Gọi hàm setGreeting để cập nhật giá trị chào theo prop name
+      setGreeting(`Hello, ${name}!`);
+    }, [name]); // Truyền prop name vào mảng phụ thuộc để chỉ chạy hook useEffect khi prop name thay đổi
+
+    // Hiển thị giá trị chào trong component
+    return <div>{greeting}</div>;
+  }
+  ```
+
+- `useEffect(setup)` với mảng phụ thuộc không dược khai báo, thì useEffect sẽ thực thi hàm `setup` mỗi khi component render. Điều này có thể gây ra các vấn đề về hiệu suất hoặc vòng lặp vô hạn nếu bạn không cẩn thận. Vì vậy, bạn nên truyền một mảng phụ thuộc là array rỗng hoặc array chứa các giá trị mà bạn muốn hook useEffect chạy lại khi chúng thay đổi.

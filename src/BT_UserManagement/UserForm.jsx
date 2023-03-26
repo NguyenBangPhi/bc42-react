@@ -1,14 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-function UserForm({ user, onSubmit }) {
+function UserForm({ user, onSubmit, onReset }) {
   // state quản lý giá trị của các input trong form
   const [values, setValues] = useState({
-    id: user.id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    address: user.address,
+    firstName: "",
+    lastName: "",
+    email: "",
+    address: "",
   });
+
+  // Hàm setup của useEffect sẽ được chạy ở sau lần render đầu tiên và sau mỗi lần render tiếp theo nếu giá trị của prop user bị thay đổi
+  useEffect(() => {
+    // Dùng giá trị mới của prop user để cập nhật cho state values
+    setValues(user);
+  }, [user]);
 
   const handleChange = (evt) => {
     const { value, name } = evt.target;
@@ -23,8 +28,8 @@ function UserForm({ user, onSubmit }) {
     // Chặn hành vi submit mặc định của form
     evt.preventDefault();
 
-    // Gọi prop onSubmit và truyền vào object values, và tham số để xác định xem là cần thêm mới hay cập nhật
-    onSubmit(values, values.id ? "update" : "create");
+    // Gọi prop onSubmit và truyền vào object values
+    onSubmit(values);
 
     // Gọi hàm handleResetForm để set giá trị trên các input về rỗng
     handleResetForm();
@@ -37,6 +42,7 @@ function UserForm({ user, onSubmit }) {
       email: "",
       address: "",
     });
+    onReset();
   };
 
   return (

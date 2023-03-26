@@ -13,6 +13,7 @@ import Props from "./8_Props/Props";
 import ShoeShop from "./BT_ShoeShop/ShoeShop";
 import ShopingCart from "./BT_ShopingCart/ShopingCart";
 import UserManagement from "./BT_UserManagement/UserManagement";
+import Effect from "./9_Effect/Effect";
 
 function App() {
   return (
